@@ -8,7 +8,8 @@
       "Bash(find:*)",
       "Bash(test:*)",
       "Bash(node:*)",
-      "Bash(pnpm typecheck:*)"
+      "Bash(pnpm typecheck:*)",
+      "WebFetch(domain:developers.cloudflare.com)"
     ]
   }
 }
