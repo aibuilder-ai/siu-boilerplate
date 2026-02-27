@@ -169,7 +169,7 @@ pnpm exec turbo build --dry-run
 pnpm lint 2>/dev/null && echo "PASS: lint" || echo "SKIP: no lint script"
 
 # 6. Dev server starts (spot check — start and kill after 5s)
-timeout 10 pnpm dev &>/dev/null &
+timeout 3 pnpm dev &>/dev/null &
 DEV_PID=$!; sleep 5; kill $DEV_PID 2>/dev/null
 echo "PASS: dev server started"
 ```
