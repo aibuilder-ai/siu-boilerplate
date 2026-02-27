@@ -1,0 +1,38 @@
+{
+  "name": "Next.js + Supabase",
+  "description": "Turborepo + Next.js 15 + Supabase + shadcn/ui on Cloudflare Workers",
+  "packageManager": "pnpm",
+  "postCreateCommands": [
+    "pnpm exec turbo telemetry disable",
+    "pnpm types",
+    "pnpm dlx shadcn@latest add --all --cwd packages/ui"
+  ],
+  "addons": {
+    "react-query": {
+      "label": "React Query (TanStack)",
+      "description": "Adds TanStack React Query v5 with QueryClientProvider, devtools, and SSR-ready setup",
+      "packages": {},
+      "devPackages": {},
+      "filesToCopy": "addons/react-query/",
+      "patchFiles": {
+        "apps/web/package.json": {
+          "mergeJson": {
+            "dependencies": {
+              "@tanstack/react-query": "^5.71.10",
+              "@tanstack/react-query-devtools": "^5.71.10"
+            }
+          }
+        },
+        "apps/web/app/layout.tsx": {
+          "prependLine": "import Providers from \"./providers\";",
+          "replaceText": {
+            "find": "<body>{children}</body>",
+            "replace": "<body><Providers>{children}</Providers></body>"
+          }
+        }
+      },
+      "dependsOn": [],
+      "conflictsWith": []
+    }
+  }
+}

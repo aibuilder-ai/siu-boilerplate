@@ -90,13 +90,16 @@ pnpm test:template <template-id> --full --addons
 
 Also installs deps, runs typecheck, and runs build inside the generated project for every addon combination.
 
+**WARNING**: This is CPU-intensive and slow (5-10+ min for OpenNext templates). It runs a full production build per addon combination with output piped to `/dev/null`. **Do NOT run this through Claude Code** — tell the user to run it in a separate terminal. Claude Code's Bash tool will appear stuck since there's no visible progress.
+
 **Gate: all checks pass.**
 
 ### Phase 6: Manual smoke test
 
 ```bash
-cd /tmp && rm -rf smoke-test
-node <repo>/dist/index.js smoke-test -t <template-id> --no-git
+rm -rf .sandbox/smoke-test
+mkdir -p .sandbox && cd .sandbox
+node ../dist/index.js smoke-test -t <template-id> --no-git
 cd smoke-test && pnpm dev
 ```
 
@@ -131,7 +134,7 @@ pnpm test:template <id>                                # one template, dry-run
 pnpm test:template <id> --addons                       # + addon combos
 pnpm test:template <id> --full                         # + install/typecheck/build
 pnpm test:template <id> --full --addons                # everything
-pnpm test:template <id> --keep                         # keep /tmp dirs for debugging
+pnpm test:template <id> --keep                         # keep .sandbox dirs for debugging
 ```
 
 ## Common pitfalls
@@ -142,3 +145,7 @@ pnpm test:template <id> --keep                         # keep /tmp dirs for debu
 - **Non-text files**: binary files won't get variable replacement — don't put `{{projectName}}` in them.
 - **Addon patch ordering**: `replaceText` does simple string replace (first match only). Make the `find` string unique.
 - **Stale dependency versions**: always use Context7 to verify latest stable versions before hardcoding version strings in package.json files.
+- **Supabase cookie helpers need explicit types**: With `strict: true`, the `setAll(cookiesToSet)` callback in `@supabase/ssr` needs an explicit type: `cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]`. Without this, TypeScript errors on implicit `any`.
+- **Supabase env var naming**: As of 2025+, Supabase uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not `ANON_KEY`) and `supabase.auth.getClaims()` (not `getUser()`) in middleware. Always verify against current Supabase docs.
+- **`--full` test hangs in Claude Code**: The full test runs production builds with output piped to `/dev/null`. This appears stuck from Claude Code's perspective. Always tell the user to run `--full` tests in their own terminal.
+- **CLI needs `--yes` flag in non-TTY**: The CLI uses `@clack/prompts` which requires a TTY. When running from scripts or Claude Code, always pass `--yes` to skip prompts.

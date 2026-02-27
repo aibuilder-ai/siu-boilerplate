@@ -44,7 +44,7 @@ pnpm local          # Build + run CLI locally
 
 ## Testing Templates
 
-The `test:template` script scaffolds into a `/tmp` sandbox and validates the output automatically.
+The `test:template` script scaffolds into a `.sandbox/` directory in the repo and validates the output automatically.
 
 ```bash
 # Quick dry-run (no install, ~5s) — checks scaffolding + template var replacement
@@ -65,7 +65,7 @@ After any template change, run at minimum: `pnpm test:template <template-id> --a
 ## Testing the CLI Manually
 
 ```bash
-# After building, test from /tmp:
+# After building, test manually:
 node dist/index.js --list templates
 node dist/index.js --list addons -t cloudflare-monorepo
 node dist/index.js my-app -t cloudflare-monorepo -a nextjs-dashboard,agentic-skills --no-git --no-install
@@ -84,7 +84,7 @@ node dist/index.js my-app -t cloudflare-monorepo --yes --no-install
 
 ## Workflow: Creating a New Template
 
-Follow these phases in order. Every phase has a gate — do NOT proceed to the next phase until the gate passes. Use `/tmp/siu-test-<template-id>` as the scratch directory throughout.
+Follow these phases in order. Every phase has a gate — do NOT proceed to the next phase until the gate passes. Use `.sandbox/siu-test-<template-id>` as the scratch directory throughout.
 
 ### Phase 1: Plan the template structure
 
@@ -122,14 +122,16 @@ Test that the CLI produces the correct file tree without installing dependencies
 
 ```bash
 pnpm build
-cd /tmp && rm -rf siu-test-<template-id>
-node <path-to-repo>/dist/index.js siu-test-<template-id> -t <template-id> --no-git --no-install
+rm -rf .sandbox/siu-test-<template-id>
+mkdir -p .sandbox && cd .sandbox
+node ../dist/index.js siu-test-<template-id> -t <template-id> --no-git --no-install
+cd ..
 ```
 
 Then verify:
-1. `ls -la /tmp/siu-test-<template-id>/` — all expected top-level files exist (`.gitignore`, `.npmrc`, `package.json`, `turbo.json`, etc.)
-2. `cat /tmp/siu-test-<template-id>/package.json` — `"name"` is `"siu-test-<template-id>"`, not `"{{projectName}}"`
-3. `grep -r '{{projectName}}' /tmp/siu-test-<template-id>/` — must return **zero results** (all vars replaced)
+1. `ls -la .sandbox/siu-test-<template-id>/` — all expected top-level files exist (`.gitignore`, `.npmrc`, `package.json`, `turbo.json`, etc.)
+2. `cat .sandbox/siu-test-<template-id>/package.json` — `"name"` is `"siu-test-<template-id>"`, not `"{{projectName}}"`
+3. `grep -r '{{projectName}}' .sandbox/siu-test-<template-id>/` — must return **zero results** (all vars replaced)
 4. `.spinitup.json` exists and contains the correct template name
 5. Every `package.json` in the workspace has `"name": "@siu-test-<template-id>/..."` (not template variable)
 6. Every `tsconfig.json` has valid `extends` paths (no `{{projectName}}`)
@@ -141,14 +143,16 @@ Then verify:
 Test that dependencies resolve and the project builds:
 
 ```bash
-cd /tmp && rm -rf siu-test-<template-id>
-node <path-to-repo>/dist/index.js siu-test-<template-id> -t <template-id> --no-git
+rm -rf .sandbox/siu-test-<template-id>
+mkdir -p .sandbox && cd .sandbox
+node ../dist/index.js siu-test-<template-id> -t <template-id> --no-git
+cd ..
 ```
 
 Then verify inside the generated project:
 
 ```bash
-cd /tmp/siu-test-<template-id>
+cd .sandbox/siu-test-<template-id>
 
 # 1. Dependencies installed
 ls node_modules/ > /dev/null && echo "PASS: node_modules exists"
@@ -181,9 +185,11 @@ echo "PASS: dev server started"
 For each addon defined in `template.json`, scaffold with only that addon:
 
 ```bash
-cd /tmp && rm -rf siu-test-<template-id>-addon-<addon-id>
-node <path-to-repo>/dist/index.js siu-test-<template-id>-addon-<addon-id> \
+rm -rf .sandbox/siu-test-<template-id>-addon-<addon-id>
+mkdir -p .sandbox && cd .sandbox
+node ../dist/index.js siu-test-<template-id>-addon-<addon-id> \
   -t <template-id> -a <addon-id> --no-git
+cd ..
 ```
 
 Then verify:
@@ -199,9 +205,11 @@ Then verify:
 Scaffold with ALL addons enabled at once:
 
 ```bash
-cd /tmp && rm -rf siu-test-<template-id>-all
-node <path-to-repo>/dist/index.js siu-test-<template-id>-all \
+rm -rf .sandbox/siu-test-<template-id>-all
+mkdir -p .sandbox && cd .sandbox
+node ../dist/index.js siu-test-<template-id>-all \
   -t <template-id> -a <addon1>,<addon2>,<addon3> --no-git
+cd ..
 ```
 
 Then verify:
@@ -216,14 +224,16 @@ Verify addons can be added post-creation:
 
 ```bash
 # Scaffold base only
-cd /tmp && rm -rf siu-test-<template-id>-add
-node <path-to-repo>/dist/index.js siu-test-<template-id>-add \
+rm -rf .sandbox/siu-test-<template-id>-add
+mkdir -p .sandbox && cd .sandbox
+node ../dist/index.js siu-test-<template-id>-add \
   -t <template-id> --no-git
 
 # Add an addon after the fact
-cd /tmp/siu-test-<template-id>-add
-node <path-to-repo>/dist/index.js add
+cd siu-test-<template-id>-add
+node ../../dist/index.js add
 # Select addon interactively, or test non-interactively if supported
+cd ../..
 ```
 
 Then verify:
@@ -235,10 +245,10 @@ Then verify:
 
 ```bash
 pnpm build
-node <path-to-repo>/dist/index.js --list templates
+node dist/index.js --list templates
 # Must show the new template with correct name/description
 
-node <path-to-repo>/dist/index.js --list addons -t <template-id>
+node dist/index.js --list addons -t <template-id>
 # Must show all addons with correct labels/descriptions
 ```
 
@@ -273,3 +283,11 @@ Phase 7 (`add` command) requires manual testing since it's interactive.
 - Worker apps use `wrangler.jsonc` (not `.toml`), with `nodejs_compat` flag and `satisfies ExportedHandler<Env>`
 - TypeScript configs extend from `@<projectName>/typescript-config` (`workers.json` or `nextjs.json`)
 - Workspace packages use `workspace:*` for internal dependencies
+
+## Known Issues & Gotchas
+
+- **`--full` test is CPU-intensive and slow**: The `pnpm test:template <id> --full --addons` command runs `pnpm build` inside each scaffolded project. For OpenNext templates, this triggers a full Next.js production build + Cloudflare bundling per combination (base + each addon + all addons). This is very CPU-heavy and can take 5-10+ minutes. The test script pipes build output to `/dev/null`, so there's no visible progress. Prefer running `--full` tests in a separate terminal, not through Claude Code.
+- **Dry-run is the fast feedback loop**: `pnpm test:template <id> --addons` (no `--full`) completes in ~5s and catches most issues (scaffolding, template var replacement, addon patching). Always run this first.
+- **Supabase cookie helpers need explicit types**: When using `@supabase/ssr` with `strict: true` in tsconfig, the `setAll(cookiesToSet)` callback needs an explicit type annotation: `cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]`. Without this, TypeScript errors on implicit `any`.
+- **Supabase auth API changes**: As of 2025+, Supabase uses `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (not `ANON_KEY`) and `supabase.auth.getClaims()` (not `getUser()`) in middleware. Always check the latest Supabase docs before creating auth templates.
+- **CLI requires TTY**: The CLI uses `@clack/prompts` which needs a TTY. Running `node dist/index.js` directly from Claude Code's Bash tool fails with `ERR_TTY_INIT_FAILED`. The test script works because it passes `--yes` to skip interactive prompts. For manual testing, always use `--yes` or run in a real terminal.
