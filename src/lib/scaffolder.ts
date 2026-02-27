@@ -47,6 +47,7 @@ export async function scaffold(config: ScaffoldConfig): Promise<void> {
   s.start("Copying template files...");
   const filesDir = path.join(templateDir, "files");
   await fse.copy(filesDir, dest);
+  await renameDotfiles(dest);
   s.stop("Template files copied.");
 
   // 2. Apply addons
@@ -229,6 +230,31 @@ async function mergeIntoPackageJson(
   const pkg = await fse.readJson(pkgPath);
   pkg[field] = { ...(pkg[field] || {}), ...packages };
   await fse.writeJson(pkgPath, pkg, { spaces: 2 });
+}
+
+/**
+ * Rename underscore-prefixed dotfiles (e.g. _gitignore → .gitignore).
+ * npm strips .gitignore from packages, so we ship them as _gitignore.
+ */
+const DOTFILE_RENAMES: Record<string, string> = {
+  _gitignore: ".gitignore",
+  _npmrc: ".npmrc",
+};
+
+async function renameDotfiles(dir: string): Promise<void> {
+  const entries = await fs.promises.readdir(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      if (entry.name === "node_modules" || entry.name === ".git") continue;
+      await renameDotfiles(fullPath);
+    } else if (entry.isFile() && DOTFILE_RENAMES[entry.name]) {
+      const newPath = path.join(dir, DOTFILE_RENAMES[entry.name]);
+      await fs.promises.rename(fullPath, newPath);
+    }
+  }
 }
 
 /**
