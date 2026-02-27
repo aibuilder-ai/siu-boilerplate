@@ -1,0 +1,20 @@
+{
+  "name": "@{{projectName}}/db",
+  "version": "0.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "drizzle-orm": "latest"
+  },
+  "devDependencies": {
+    "@{{projectName}}/typescript-config": "workspace:*",
+    "drizzle-kit": "latest",
+    "typescript": "^5.7.0"
+  }
+}

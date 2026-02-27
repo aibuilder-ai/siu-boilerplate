@@ -1,0 +1,19 @@
+{
+  "name": "@{{projectName}}/api",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "types": "wrangler types",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "latest"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "@{{projectName}}/typescript-config": "workspace:*",
+    "typescript": "^5.7.0",
+    "wrangler": "^4.6.0"
+  }
+}

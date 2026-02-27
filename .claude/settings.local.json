@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install:*)",
+      "Bash(script -q /dev/null /bin/bash -c 'cd /tmp && node /Users/pouria/Documents/sustainbit/cloudflare-poc/siu-boilerplate/dist/index.js test-err --yes')"
+    ]
+  }
+}

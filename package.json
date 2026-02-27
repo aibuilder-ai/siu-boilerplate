@@ -1,0 +1,34 @@
+{
+  "name": "siu-boilerplate",
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "siu-boilerplate": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "local": "pnpm build && node dist/index.js",
+    "prepare": "tsup"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.0",
+    "commander": "^13.0.0",
+    "execa": "^9.0.0",
+    "fs-extra": "^11.0.0",
+    "picocolors": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.0",
+    "@types/node": "^22.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

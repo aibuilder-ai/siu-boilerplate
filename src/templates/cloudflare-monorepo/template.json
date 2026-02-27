@@ -1,0 +1,78 @@
+{
+  "name": "Cloudflare Monorepo",
+  "description": "Turborepo + Cloudflare Workers + Pages + D1 + KV",
+  "packageManager": "pnpm",
+  "postCreateCommands": [
+    "pnpm exec turbo telemetry disable"
+  ],
+  "addons": {
+    "drizzle": {
+      "label": "Drizzle ORM + D1 adapter",
+      "description": "Adds a shared `packages/db` with Drizzle schema and D1 config",
+      "packages": {
+        "drizzle-orm": "latest"
+      },
+      "devPackages": {
+        "drizzle-kit": "latest"
+      },
+      "filesToCopy": "addons/drizzle/",
+      "patchFiles": {
+        "apps/worker/package.json": {
+          "mergeJson": {
+            "dependencies": {
+              "@repo/db": "workspace:*"
+            }
+          }
+        },
+        "pnpm-workspace.yaml": {
+          "appendLine": "  - 'packages/db'"
+        }
+      },
+      "dependsOn": [],
+      "conflictsWith": []
+    },
+    "hono": {
+      "label": "Hono API app",
+      "description": "Adds `apps/api` — a Hono app deployed to Cloudflare Workers",
+      "packages": {
+        "hono": "latest"
+      },
+      "devPackages": {},
+      "filesToCopy": "addons/hono/",
+      "patchFiles": {
+        "pnpm-workspace.yaml": {
+          "appendLine": "  - 'apps/api'"
+        }
+      },
+      "dependsOn": [],
+      "conflictsWith": []
+    },
+    "tailwind": {
+      "label": "Tailwind CSS v4",
+      "description": "Adds Tailwind CSS config to the UI package",
+      "packages": {
+        "tailwindcss": "^4.1.0",
+        "@tailwindcss/postcss": "^4.1.0",
+        "tailwind-merge": "latest",
+        "clsx": "latest"
+      },
+      "devPackages": {},
+      "filesToCopy": "addons/tailwind/",
+      "patchFiles": {},
+      "dependsOn": [],
+      "conflictsWith": []
+    },
+    "biome": {
+      "label": "Biome (lint + format)",
+      "description": "Replaces ESLint + Prettier with Biome",
+      "packages": {},
+      "devPackages": {
+        "@biomejs/biome": "latest"
+      },
+      "filesToCopy": "addons/biome/",
+      "patchFiles": {},
+      "dependsOn": [],
+      "conflictsWith": ["eslint"]
+    }
+  }
+}

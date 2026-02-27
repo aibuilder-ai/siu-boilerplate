@@ -1,0 +1,16 @@
+{
+  "name": "{{projectName}}",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "turbo run dev",
+    "deploy": "turbo run deploy",
+    "types": "turbo run types",
+    "check:types": "turbo run check:types"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "turbo": "^2.4.0",
+    "typescript": "^5.7.0"
+  }
+}
