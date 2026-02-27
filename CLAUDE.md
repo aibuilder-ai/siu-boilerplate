@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-`siu-boilerplate` is a Node.js CLI tool that scaffolds predefined boilerplate projects. It currently ships one template (`cloudflare-monorepo`) and supports optional addons (drizzle, hono, tailwind, biome). Distributed as a private package installable from a GitHub repo.
+`siu-boilerplate` is a Node.js CLI tool that scaffolds predefined boilerplate projects. It currently ships one template (`cloudflare-monorepo`) with two optional addons (`nextjs-dashboard`, `agentic-skills`). Distributed as a private package installable from a GitHub repo.
 
 ## Tech Stack
 
@@ -30,7 +30,7 @@ src/
     cloudflare-monorepo/
       template.json                 # Template manifest (name, addons, patch rules)
       files/                        # Base boilerplate files copied to destination
-      addons/                       # Addon overlay files (drizzle/, hono/, tailwind/, biome/)
+      addons/                       # Addon overlay files (nextjs-dashboard/, agentic-skills/)
 ```
 
 ## Key Commands
@@ -48,7 +48,7 @@ pnpm local          # Build + run CLI locally
 # After building, test from /tmp:
 node dist/index.js --list templates
 node dist/index.js --list addons -t cloudflare-monorepo
-node dist/index.js my-app -t cloudflare-monorepo -a drizzle,hono --no-git --no-install
+node dist/index.js my-app -t cloudflare-monorepo -a nextjs-dashboard,agentic-skills --no-git --no-install
 node dist/index.js my-app -t cloudflare-monorepo --yes --no-install
 ```
 
