@@ -13,6 +13,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "local": "pnpm build && node dist/index.js",
+    "test:template": "bash scripts/test-template.sh",
     "prepare": "tsup"
   },
   "dependencies": {

@@ -12,7 +12,9 @@
       "WebFetch(domain:developers.cloudflare.com)",
       "Bash(git -C /Users/pouria/Documents/sustainbit/cloudflare-poc/siu-boilerplate remote get-url origin)",
       "Bash(npm pack:*)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(chmod:*)",
+      "Bash(pnpm test:template:*)"
     ]
   }
 }

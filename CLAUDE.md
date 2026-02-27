@@ -42,7 +42,27 @@ pnpm typecheck      # Type-check without emitting
 pnpm local          # Build + run CLI locally
 ```
 
-## Testing the CLI
+## Testing Templates
+
+The `test:template` script scaffolds into a `/tmp` sandbox and validates the output automatically.
+
+```bash
+# Quick dry-run (no install, ~5s) — checks scaffolding + template var replacement
+pnpm test:template                                    # all templates
+pnpm test:template cloudflare-monorepo                # specific template
+pnpm test:template cloudflare-monorepo --addons       # also test each addon
+
+# Full test (with install + typecheck + build, ~2-5min)
+pnpm test:template cloudflare-monorepo --full         # base only
+pnpm test:template cloudflare-monorepo --full --addons # base + all addon combos
+
+# Debugging — keep temp dirs for inspection
+pnpm test:template cloudflare-monorepo --keep
+```
+
+After any template change, run at minimum: `pnpm test:template <template-id> --addons`
+
+## Testing the CLI Manually
 
 ```bash
 # After building, test from /tmp:
@@ -224,20 +244,19 @@ node <path-to-repo>/dist/index.js --list addons -t <template-id>
 
 **Gate: Both commands must show the new template and its addons.**
 
-### Quick Reference: Validation Checklist
+### Quick Reference: Automated Validation
 
-Use this condensed checklist when making any template change:
+Phases 3-6 and 8 are automated by `pnpm test:template`. Run these after any template change:
 
+```bash
+# Minimum (dry-run, ~5s): covers Phases 3, 5-6 dry-run, and 8
+pnpm test:template <template-id> --addons
+
+# Full (install + build, ~2-5min): covers Phases 3, 4, 5-6, and 8
+pnpm test:template <template-id> --full --addons
 ```
-[ ] pnpm build && pnpm typecheck (CLI itself compiles)
-[ ] --list templates shows new template
-[ ] --list addons -t <id> shows all addons
-[ ] Scaffold --no-install: no {{projectName}} in output
-[ ] Scaffold with install: pnpm typecheck && pnpm build pass in generated project
-[ ] Each addon individually: typecheck + build pass
-[ ] All addons combined: typecheck + build pass
-[ ] add command works post-creation
-```
+
+Phase 7 (`add` command) requires manual testing since it's interactive.
 
 ## Adding a New Addon
 
