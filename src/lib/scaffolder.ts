@@ -51,9 +51,10 @@ export async function scaffold(config: ScaffoldConfig): Promise<void> {
   s.stop("Template files copied.");
 
   // 2. Apply addons
+  let addonCommands: string[] = [];
   if (addons.length > 0) {
     s.start(`Applying addons: ${addons.join(", ")}...`);
-    await applyAddons(dest, templateDir, meta, addons);
+    addonCommands = await applyAddons(dest, templateDir, meta, addons);
     s.stop("Addons applied.");
   }
 
@@ -112,6 +113,19 @@ export async function scaffold(config: ScaffoldConfig): Promise<void> {
       }
     }
   }
+
+  // 8. Addon post-create commands
+  if (install && addonCommands.length > 0) {
+    for (const cmd of addonCommands) {
+      s.start(`Running: ${cmd}...`);
+      try {
+        await execa(cmd, { cwd: dest, shell: true });
+        s.stop(`Completed: ${cmd}`);
+      } catch {
+        s.stop(`Failed: ${cmd}. Run it manually.`);
+      }
+    }
+  }
 }
 
 /**
@@ -123,7 +137,9 @@ export async function applyAddons(
   templateDir: string,
   meta: ReturnType<typeof getTemplateMeta>,
   addonIds: string[]
-): Promise<void> {
+): Promise<string[]> {
+  const addonCommands: string[] = [];
+
   for (const addonId of addonIds) {
     const addon = meta.addons[addonId];
     if (!addon) {
@@ -164,7 +180,14 @@ export async function applyAddons(
         addon.devPackages
       );
     }
+
+    // e. Collect post-create commands
+    if (addon.postCreateCommands) {
+      addonCommands.push(...addon.postCreateCommands);
+    }
   }
+
+  return addonCommands;
 }
 
 /**

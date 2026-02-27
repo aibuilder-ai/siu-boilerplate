@@ -71,7 +71,7 @@ export const addCommand = new Command("add")
     // Apply addons
     const s = p.spinner();
     s.start(`Applying addons: ${addonIds.join(", ")}...`);
-    await applyAddons(dest, templateDir, meta, addonIds);
+    const addonCommands = await applyAddons(dest, templateDir, meta, addonIds);
 
     // Replace template vars in new files
     // Read projectName from package.json
@@ -91,6 +91,19 @@ export const addCommand = new Command("add")
       s.stop("Dependencies installed.");
     } catch {
       s.stop(`Failed to run ${pm} install. Run it manually.`);
+    }
+
+    // Run addon post-create commands
+    if (addonCommands.length > 0) {
+      for (const cmd of addonCommands) {
+        s.start(`Running: ${cmd}...`);
+        try {
+          await execa(cmd, { cwd: dest, shell: true });
+          s.stop(`Completed: ${cmd}`);
+        } catch {
+          s.stop(`Failed: ${cmd}. Run it manually.`);
+        }
+      }
     }
 
     // Update .spinitup.json

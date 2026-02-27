@@ -16,6 +16,7 @@ export interface AddonConfig {
   devPackages: Record<string, string>;
   filesToCopy: string;
   patchFiles: Record<string, PatchOperations>;
+  postCreateCommands?: string[];
   dependsOn: string[];
   conflictsWith: string[];
 }
