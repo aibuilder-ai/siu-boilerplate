@@ -1,4 +1,4 @@
-import { fetchWorker } from "../../lib/fetch-worker";
+import { fetchWorker } from "@/app/lib/fetch-worker";
 
 /**
  * Example API route demonstrating Cloudflare service bindings.
