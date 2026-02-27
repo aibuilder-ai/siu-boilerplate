@@ -1,4 +1,11 @@
 {
-  "extends": "@{{projectName}}/typescript-config/workers.json",
-  "include": ["src/**/*.ts"]
+  "extends": "@{{projectName}}/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@{{projectName}}/ui/*": ["./src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
 }

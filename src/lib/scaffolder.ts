@@ -96,16 +96,15 @@ export async function scaffold(config: ScaffoldConfig): Promise<void> {
     }
   }
 
-  // 7. Post-create commands
-  if (meta.postCreateCommands && meta.postCreateCommands.length > 0) {
+  // 7. Post-create commands (only run if install succeeded — they need node_modules)
+  if (install && meta.postCreateCommands && meta.postCreateCommands.length > 0) {
     for (const cmd of meta.postCreateCommands) {
       // Skip the install command if we already ran it
-      if (install && cmd.includes("install")) continue;
+      if (cmd.includes("pnpm install") || cmd.includes("npm install")) continue;
 
       s.start(`Running: ${cmd}...`);
       try {
-        const [bin, ...args] = cmd.split(" ");
-        await execa(bin, args, { cwd: dest });
+        await execa(cmd, { cwd: dest, shell: true });
         s.stop(`Completed: ${cmd}`);
       } catch {
         s.stop(`Failed: ${cmd}. Run it manually.`);

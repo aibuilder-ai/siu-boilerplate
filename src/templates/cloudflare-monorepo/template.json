@@ -3,7 +3,9 @@
   "description": "Turborepo + Cloudflare Workers + Pages + D1 + KV",
   "packageManager": "pnpm",
   "postCreateCommands": [
-    "pnpm exec turbo telemetry disable"
+    "pnpm exec turbo telemetry disable",
+    "pnpm types",
+    "pnpm dlx shadcn@latest add --all --cwd packages/ui"
   ],
   "addons": {
     "drizzle": {
@@ -49,15 +51,10 @@
     },
     "tailwind": {
       "label": "Tailwind CSS v4",
-      "description": "Adds Tailwind CSS config to the UI package",
-      "packages": {
-        "tailwindcss": "^4.1.0",
-        "@tailwindcss/postcss": "^4.1.0",
-        "tailwind-merge": "latest",
-        "clsx": "latest"
-      },
+      "description": "Included in the base UI package — no extra setup needed",
+      "packages": {},
       "devPackages": {},
-      "filesToCopy": "addons/tailwind/",
+      "filesToCopy": "",
       "patchFiles": {},
       "dependsOn": [],
       "conflictsWith": []
