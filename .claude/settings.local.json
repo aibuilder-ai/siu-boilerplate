@@ -14,7 +14,8 @@
       "Bash(npm pack:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(chmod:*)",
-      "Bash(pnpm test:template:*)"
+      "Bash(pnpm test:template:*)",
+      "Bash(python3:*)"
     ]
   }
 }
