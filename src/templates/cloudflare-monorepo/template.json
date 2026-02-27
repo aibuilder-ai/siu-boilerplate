@@ -17,6 +17,16 @@
       "patchFiles": {},
       "dependsOn": [],
       "conflictsWith": []
+    },
+    "agentic-skills": {
+      "label": "Agentic Skills (.agents)",
+      "description": "Adds .agents/skills — Claude Code skill definitions for Cloudflare Workers, Durable Objects, shadcn/ui, Wrangler, and more",
+      "packages": {},
+      "devPackages": {},
+      "filesToCopy": "addons/agentic-skills/",
+      "patchFiles": {},
+      "dependsOn": [],
+      "conflictsWith": []
     }
   }
 }
