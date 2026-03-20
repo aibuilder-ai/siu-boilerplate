@@ -19,26 +19,6 @@
       "dependsOn": [],
       "conflictsWith": []
     },
-    "agentic-skills": {
-      "label": "Agentic Skills (Claude Code)",
-      "description": "Installs Claude Code agent skills for Cloudflare Workers, Durable Objects, shadcn/ui, TanStack, and more via the skills CLI",
-      "packages": {},
-      "devPackages": {},
-      "filesToCopy": "",
-      "patchFiles": {},
-      "postCreateCommands": [
-        "npx -y skills add https://github.com/deckardger/tanstack-agent-skills --skill tanstack-start-best-practices --agent claude-code --yes",
-        "npx -y skills add https://github.com/vercel-labs/agent-skills --skill vercel-composition-patterns --agent claude-code --yes",
-        "npx -y skills add https://github.com/vercel-labs/agent-skills --skill web-design-guidelines --agent claude-code --yes",
-        "npx -y skills add https://github.com/giuseppe-trisciuoglio/developer-kit --skill shadcn-ui --agent claude-code --yes",
-        "npx -y skills add https://github.com/brianlovin/claude-config --skill simplify --agent claude-code --yes",
-        "npx -y skills add https://github.com/cloudflare/skills --skill wrangler --agent claude-code --yes",
-        "npx -y skills add https://github.com/cloudflare/skills --skill durable-objects --agent claude-code --yes",
-        "npx -y skills add https://github.com/cloudflare/skills --skill workers-best-practices --agent claude-code --yes"
-      ],
-      "dependsOn": [],
-      "conflictsWith": []
-    },
     "durable-object-websocket": {
       "label": "Durable Object WebSocket",
       "description": "Adds a WebSocket hibernation server Durable Object to the worker with a /websocket endpoint",
