@@ -1,0 +1,11 @@
+{
+  "name": "Next.js + Hono Worker",
+  "description": "Next.js 16 on Cloudflare Workers (OpenNext) + Hono API worker with service binding",
+  "packageManager": "pnpm",
+  "source": "github:aibuilder-ai/nextjs-hono-worker-starter",
+  "filesDir": ".",
+  "postCreateCommands": [
+    "cd workers/api && pnpm install"
+  ],
+  "addons": {}
+}

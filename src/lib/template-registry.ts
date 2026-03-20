@@ -32,6 +32,12 @@ export interface TemplateConfig {
    * When absent, falls back to bundled files in dist/templates/.
    */
   source?: string;
+  /**
+   * Subdirectory within the downloaded/local template dir that contains the
+   * actual project files to copy. Defaults to "files" (bundled layout).
+   * Set to "." when the GitHub repo root IS the template (flat repo).
+   */
+  filesDir?: string;
   postCreateCommands?: string[];
   addons: Record<string, AddonConfig>;
 }

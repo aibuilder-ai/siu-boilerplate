@@ -56,7 +56,7 @@ export async function scaffold(config: ScaffoldConfig): Promise<void> {
 
   // 2. Copy base files
   s.start("Copying template files...");
-  const filesDir = path.join(templateDir, "files");
+  const filesDir = path.join(templateDir, meta.filesDir ?? "files");
   await fse.copy(filesDir, dest);
   await renameDotfiles(dest);
   s.stop("Template files copied.");
