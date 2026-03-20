@@ -15,7 +15,13 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(chmod:*)",
       "Bash(pnpm test:template:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__query-docs",
+      "Bash(pnpm exec tsc:*)",
+      "Bash(pnpm check:types:*)",
+      "Bash(timeout 120 bash:*)",
+      "Bash(gh api:*)"
     ]
   }
 }

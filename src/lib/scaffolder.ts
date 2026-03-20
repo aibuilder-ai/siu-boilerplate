@@ -3,6 +3,7 @@ import path from "node:path";
 import fse from "fs-extra";
 import * as p from "@clack/prompts";
 import { execa } from "execa";
+import { downloadTemplate } from "giget";
 import {
   TEXT_FILE_EXTENSIONS,
   deepMerge,
@@ -38,19 +39,29 @@ interface SpinItUpJson {
 export async function scaffold(config: ScaffoldConfig): Promise<void> {
   const { projectName, template, addons, git, install } = config;
   const meta = getTemplateMeta(template);
-  const templatesDir = getTemplatesDir();
-  const templateDir = path.join(templatesDir, template);
   const dest = path.resolve(process.cwd(), projectName);
 
-  // 1. Copy base files
+  // 1. Resolve template directory (remote via giget, or local bundle)
   const s = p.spinner();
+  let templateDir: string;
+  if (meta.source) {
+    s.start("Fetching template...");
+    const result = await downloadTemplate(meta.source, { preferOffline: true });
+    templateDir = result.dir;
+    s.stop("Template fetched.");
+  } else {
+    const templatesDir = getTemplatesDir();
+    templateDir = path.join(templatesDir, template);
+  }
+
+  // 2. Copy base files
   s.start("Copying template files...");
   const filesDir = path.join(templateDir, "files");
   await fse.copy(filesDir, dest);
   await renameDotfiles(dest);
   s.stop("Template files copied.");
 
-  // 2. Apply addons
+  // 3. Apply addons
   let addonCommands: string[] = [];
   if (addons.length > 0) {
     s.start(`Applying addons: ${addons.join(", ")}...`);
@@ -58,12 +69,12 @@ export async function scaffold(config: ScaffoldConfig): Promise<void> {
     s.stop("Addons applied.");
   }
 
-  // 3. Replace {{projectName}} in all text files
+  // 4. Replace {{projectName}} in all text files
   s.start("Replacing template variables...");
   await walkAndReplace(dest, { projectName });
   s.stop("Template variables replaced.");
 
-  // 4. Write .spinitup.json
+  // 5. Write .spinitup.json
   const spinitup: SpinItUpJson = {
     template,
     installedAddons: addons,
@@ -74,7 +85,7 @@ export async function scaffold(config: ScaffoldConfig): Promise<void> {
     spaces: 2,
   });
 
-  // 5. Git init
+  // 6. Git init
   if (git) {
     s.start("Initializing git repository...");
     try {

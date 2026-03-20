@@ -2,6 +2,7 @@
   "name": "Cloudflare Monorepo",
   "description": "Turborepo + Cloudflare Workers + Pages + D1 + KV",
   "packageManager": "pnpm",
+  "source": "github:YOUR_ORG/siu-templates/cloudflare-monorepo",
   "postCreateCommands": [
     "pnpm exec turbo telemetry disable",
     "pnpm types",

@@ -25,6 +25,13 @@ export interface TemplateConfig {
   name: string;
   description: string;
   packageManager: "pnpm" | "npm" | "bun";
+  /**
+   * Remote source for template files in giget format.
+   * e.g. "github:your-org/siu-templates/cloudflare-monorepo"
+   * When set, the CLI fetches files from this URL instead of the bundled copy.
+   * When absent, falls back to bundled files in dist/templates/.
+   */
+  source?: string;
   postCreateCommands?: string[];
   addons: Record<string, AddonConfig>;
 }
