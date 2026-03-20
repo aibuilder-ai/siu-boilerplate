@@ -13,8 +13,7 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
     "local": "pnpm build && node dist/index.js",
-    "test:template": "bash scripts/test-template.sh",
-    "prepare": "tsup"
+    "test:template": "bash scripts/test-template.sh"
   },
   "dependencies": {
     "@clack/prompts": "^0.9.0",

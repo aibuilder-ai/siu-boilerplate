@@ -6,5 +6,5 @@ export default defineConfig({
   dts: false,
   clean: true,
   target: "node18",
-  onSuccess: "rsync -a src/templates/ dist/templates/",
+  onSuccess: "cp -r src/templates dist/templates",
 });
