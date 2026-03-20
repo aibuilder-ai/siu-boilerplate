@@ -6,5 +6,5 @@ export default defineConfig({
   dts: false,
   clean: true,
   target: "node18",
-  onSuccess: "cp -r src/templates dist/templates",
+  onSuccess: "rm -rf dist/templates && cp -r src/templates dist/templates",
 });
